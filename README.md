@@ -1,23 +1,27 @@
-  #                                                                     MinIO Setup
+  <center> <u> <h1 style="font-size: 50px;">MinIO Setup
+</h1> </u> </center>
+  
 
-## Task requirement
+## 1. Task requirement
 
 To set up an object storage system in a cluster using MinIO.
 
-## Environment details
+## 2. Environment details
 
 - OS: Ubuntu 20.04
 
-## List of tools and technologies
+## 3. List of tools and technologies
 
-- MinIO - Latest Version (RELEASE.2023-08-16T20-17-30Z*)*
+- **MinIO** - Latest Version (RELEASE.2023-08-16T20-17-30Z)
 
-## Definition of tools
+## 4. Definition of tools
 
 - MinIO - It is a software-defined high performance distributed object storage server. You can run MinIO on consumer or enterprise-grade hardware and a variety of operating systems and architectures.
   
+#### Architecture Diagram
+![](MinIO%20diagram.jpg)
 
-**Command for the setup or configuration**
+## 5.Command for the setup or configuration**
 
 **Node1:**
 
@@ -26,12 +30,19 @@ docker run -itd --name minio1 --net=host -e MINIO_ROOT_PASSWORD=redhat1234 -e MI
 ```
 
 
+
+
+
 **Node2:**
 
 ```bash
 docker run -itd --name minio2 --net=host -e MINIO_ROOT_PASSWORD=redhat1234 -e MINIO_ROOT_USER=admin   -p 9000:9000 -p 9090:9090 -v /mnt/disk2:/data docker.io/minio/minio minio server --console-address ":9090" http://minio{1..4}/data
 
 ```
+
+
+
+
 
 
 **Node3:**
@@ -51,11 +62,11 @@ docker run -itd --name minio4 --net=host -e MINIO_ROOT_PASSWORD=redhat1234 -e MI
 - **docker run**: This is the command used to create and start a new Docker container.
 
 - **itd:** These are flags that determine how the container is run:
-    - **i**: This flag tells the container to keep the standard input (stdin) open. It's commonly used when you want to interact with the container, like running an interactive shell inside it.
+    - **(i)** : This flag tells the container to keep the standard input (stdin) open. It's commonly used when you want to interact with the container, like running an interactive shell inside it.
       
-    - **t**: This flag allocates a pseudo-TTY (terminal) for the container. It simulates a terminal environment, which is useful for running commands that require terminal-like behavior, such as command-line prompts.
+    - **(t)** : This flag allocates a pseudo-TTY (terminal) for the container. It simulates a terminal environment, which is useful for running commands that require terminal-like behavior, such as command-line prompts.
       
-    - **d:** Run the container in detached mode (background).
+    - **(d)** : Run the container in detached mode (background).
 
 - **-name minio1**: This assigns the name "minio1" to the Docker container.
 
@@ -69,7 +80,7 @@ docker run -itd --name minio4 --net=host -e MINIO_ROOT_PASSWORD=redhat1234 -e MI
     - **p 9000:9000**: Map port 9000 on the host to port 9000 in the container. This is the default port for MinIO operations.
     - **p 9090:9090**: Map port 9090 on the host to port 9090 in the container. This is used for the MinIO console.
 
-- **v /mnt/disk1:/data**: This mounts the directory **/mnt/disk1** on the host to the **/data** directory within the container. This can be used to persistently store MinIO data.
+- **-v /mnt/disk1:/data**: This mounts the directory **/mnt/disk1** on the host to the **/data** directory within the container. This can be used to persistently store MinIO data.
 
 - **docker.io/minio/minio**: This specifies the Docker image to use, which is the official MinIO server image from Docker Hub.
 
@@ -93,7 +104,7 @@ docker run -itd --name minio4 --net=host -e MINIO_ROOT_PASSWORD=redhat1234 -e MI
 Add the below commands for sidekick MiniIO.
 
 
-**# Do host entry of minio1,minio2,minio3,minio4**
+**Do host entry of minio1,minio2,minio3,minio4**
 
 ```bash
   podman run -itd --name sidekick -p 8080:8080  [docker.io/minio/sidekick](http://docker.io/minio/sidekick)--health-path=/minio/health/ready --address :8080 [http://minio](http://minio/){1...4}:9000
@@ -116,10 +127,10 @@ Add the below commands for sidekick MiniIO.
 
 Here first, we have to download mc command on client machine and  then we have to set alias for them,
 
-**aliases** in the MinIO Client (**mc**) provide a way to simplify and streamline interactions with multiple MinIO servers, making it more convenient to manage and perform actions on different storage endpoints.
+- **aliases** in the MinIO Client (**mc**) provide a way to simplify and streamline interactions with multiple MinIO servers, making it more convenient to manage and perform actions on different storage endpoints.
 
 
-The [**mc alias**](https://min.io/docs/minio/linux/reference/minio-mc/mc-alias.html#command-mc.alias) commands provide a convenient interface for managing the list of S3-compatible hosts that **[mc](https://min.io/docs/minio/linux/reference/minio-mc.html#command-mc)** can connect to and run operations against.
+- The [**mc alias**](https://min.io/docs/minio/linux/reference/minio-mc/mc-alias.html#command-mc.alias) commands provide a convenient interface for managing the list of S3-compatible hosts that **[mc](https://min.io/docs/minio/linux/reference/minio-mc.html#command-mc)** can connect to and run operations against.
 
 
 ```bash
@@ -137,23 +148,23 @@ export PATH=$PATH:$HOME/minio-binaries/
 
 - **-create-dirs**: This flag tells **curl** to create the necessary directory structure if it doesn't exist. In this case, it's used to create the directory **$HOME/minio-binaries/** if it doesn't already exist.
 
-- **o $HOME/minio-binaries/mc**: This flag specifies the output file path and name for the downloaded binary. In this case, it's being saved as **mc** in the **$HOME/minio-binaries/** directory.
+- **HOME/minio-binaries/mc**: This flag specifies the output file path and name for the downloaded binary. In this case, it's being saved as **mc** in the **HOME/minio-binaries/** directory.
 
-- **+x** flag adds execute permissions to the file
+- **(+x)** flag adds execute permissions to the file
 
-- **export PATH=$PATH:$HOME/minio-binaries**/ This command adds the directory containing the MinIO client binary to the system's **PATH** environment variable. The **PATH** is a list of directories where the shell looks for executable files. By adding the MinIO binaries directory to the **PATH,** we can run the **mc** command from any location in the terminal without specifying the full path to the executable.
+- **export PATH=PATH:HOME/minio-binaries**/ This command adds the directory containing the MinIO client binary to the system's **PATH** environment variable. The **PATH** is a list of directories where the shell looks for executable files. By adding the MinIO binaries directory to the **PATH,** we can run the **mc** command from any location in the terminal without specifying the full path to the executable.
 
 **To check the bucket and object in the bucket.**
 
 ![](image2.png)
 
-**# To check the metrics of sidekick.**
+**To check the metrics of sidekick.**
 
 ```bash
 harsh@harsh:~$ curl -v localhost:8080/.prometheus/metrics
 ```
 
-- **v**: This flag stands for "verbose." When used with **curl**, it makes the tool provide more detailed information about the request and response..
+- **(v)**: This flag stands for "verbose." When used with **curl**, it makes the tool provide more detailed information about the request and response..
 
 - **localhost:8080**: This is the hostname and port number of the target server. In this case, you are making the request to the local machine (localhost) on port 8080.
 
@@ -161,8 +172,21 @@ harsh@harsh:~$ curl -v localhost:8080/.prometheus/metrics
 
 - Prometheus is a monitoring and alerting toolkit often used for collecting and analyzing metrics from various services.
 
-**Reference link**
+## 6. TEST CASES LIST ##
 
-[https://github.com/minio/sidekick](https://github.com/minio/sidekick)
+| S.NO | Component/Tool Name | Test case | Test count | Test cases | Expected Result | Test Passed[PASS/FAIL] | Remarks |
+|----------|----------|----------|----------|----------|----------|----------|----------|
+
+**Note** :NA
+
+
+## Screen with pass test cases result ##
+
+
+**Note** :NA
+
+## 7. REFERENCE LINK
+
+- [https://github.com/minio/sidekick](https://github.com/minio/sidekick)
 
 </aside>
